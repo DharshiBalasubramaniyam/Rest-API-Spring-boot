@@ -48,6 +48,4 @@ public class UserController {
     }
 }
 
-// dependency injection
-// 1. property injection - @autowired @component annotations
-// 2. constructor injection
+
