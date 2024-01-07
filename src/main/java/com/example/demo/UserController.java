@@ -1,36 +1,53 @@
 package com.example.demo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 // controller used to define controllers.
 // an endpoint is a method in controller.
 @RestController
+@RequestMapping("/users")
+@CrossOrigin
 public class UserController {
-    public UserRepository userRepository = new InMemoryUserRepository();
 
-    //todo: add dependencies
-
-    // 1. retrieving an existing user - GET
-    @GetMapping("/user")
-    public User getUser(@RequestParam int id){
-        return userRepository.findById(id);
+    public UserRepository userRepository;
+    // constructor injection
+    @Autowired
+    public UserController(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
-    // 2. add new user - user registration - POST
-    @PostMapping("/user")
+    // 1. add new user - user registration - POST
+    @PostMapping("/new")
     public void addUser(@RequestBody User user) {
         userRepository.save(user);
     }
 
-    // 3. removing a user - DELETE
-    @DeleteMapping("/user/{id}")
-    public void removeUser(@PathVariable int id) {
-        userRepository.remove(id);
+    @GetMapping("/all")
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 
-    // 4. update an existing user - PUT
-    @PutMapping("user/{id}")
-    public void updateUser(@PathVariable int id, @RequestBody User user){
-        userRepository.update(id, user);
+    @PutMapping("/{id}")
+    public void updateUser(@RequestBody User newUser, @PathVariable int id) {
+        userRepository.findById(id)
+                .map(user -> {
+                    user.setEmail(newUser.getEmail());
+                    user.setName(newUser.getName());
+                    user.setPhone(newUser.getPhone());
+                    return userRepository.save(user);
+                });
     }
 
+    @DeleteMapping("/{id}")
+    public void deleteUser(@PathVariable int id) {
+        if(userRepository.existsById(id)) {
+            userRepository.deleteById(id);
+        }
+    }
 }
+
+// dependency injection
+// 1. property injection - @autowired @component annotations
+// 2. constructor injection

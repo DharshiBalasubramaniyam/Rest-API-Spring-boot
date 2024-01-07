@@ -1,11 +1,11 @@
 package com.example.demo;
 
-public interface UserRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-    public User findById(int id);
-    public void save(User user);
+import java.util.List;
 
-    void remove(int id);
+@Repository
+public interface UserRepository extends JpaRepository<User, Integer> {
 
-    void update(int id, User user);
 }
