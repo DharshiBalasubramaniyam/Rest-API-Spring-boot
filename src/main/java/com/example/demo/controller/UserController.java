@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.modals.User;
+import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,40 +14,31 @@ import java.util.List;
 @CrossOrigin
 public class UserController {
 
-    public UserRepository userRepository;
-    // constructor injection
-    @Autowired
-    public UserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     // 1. add new user - user registration - POST
     @PostMapping("/new")
     public void addUser(@RequestBody User user) {
-        userRepository.save(user);
+        userService.addUser(user);
     }
 
     @GetMapping("/all")
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+        return userService.getAllUsers();
     }
 
     @PutMapping("/{id}")
     public void updateUser(@RequestBody User newUser, @PathVariable int id) {
-        userRepository.findById(id)
-                .map(user -> {
-                    user.setEmail(newUser.getEmail());
-                    user.setName(newUser.getName());
-                    user.setPhone(newUser.getPhone());
-                    return userRepository.save(user);
-                });
+        userService.updateUser(newUser, id);
     }
 
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable int id) {
-        if(userRepository.existsById(id)) {
-            userRepository.deleteById(id);
-        }
+        userService.deleteUser(id);
     }
 }
 
