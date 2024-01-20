@@ -1,4 +1,6 @@
-package com.example.demo;
+package com.example.demo.controller;
+import com.example.demo.repository.UserRepository;
+import com.example.demo.modals.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
