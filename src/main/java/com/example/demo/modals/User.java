@@ -1,55 +1,49 @@
 package com.example.demo.modals;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-//POJO class
+import java.time.LocalDateTime;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
-@Table(schema = "users")
+@Table(uniqueConstraints = {
+        @UniqueConstraint(columnNames = "username"),
+        @UniqueConstraint(columnNames = "email")
+})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    @Column
-    private String name;
-    @Column
+    private Long id;
+
+    @NotBlank
+    @Size(min=3, max = 20)
+    private String username;
+
+    @NotBlank
+    @Email
     private String email;
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    @Column
+    @NotBlank
+    @Size(min=10, max = 10)
     private String phone;
 
-    public User() {
-    }
+    private LocalDateTime regDateTime;
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setEmail(String email) {
+    public User(String username, String email, String phone, LocalDateTime regDateTime) {
+        this.username = username;
         this.email = email;
-    }
-
-    public void setPhone(String phone) {
         this.phone = phone;
+        this.regDateTime = regDateTime;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
 }
